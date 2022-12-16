@@ -1,15 +1,36 @@
-import './App.css';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Login from './pages/Login';
+import User from './pages/User';
+import Post from './pages/Post';
+import ErrorPage from './pages/ErrorPage'
+import { checkUserAuth } from './middleware/middleware';
 
-function App() {
-  return (
-      <div className="App m-100 flex-column align-items">
-        <h2>login authentication App</h2>
-        <h3>
-          <Link to="/account/login">Click here</Link> to go to login page
-        </h3>
-      </div>
-  );
+export default function App() {
+  useEffect(() => {
+    if (window.location.pathname.split("/").includes('post') || window.location.pathname.split("/").includes('user')) {
+      checkUserAuth();
+    }
+  }, [])
+
+  const router = createBrowserRouter([
+    {
+      path: '/account/login',
+      element: <Login />,
+    },
+    {
+      path: '/account/user',
+      element: <User />
+    },
+    {
+      path: '/account/post/:id',
+      element: <Post />
+    },
+    {
+      path: '*',
+      element: <ErrorPage />
+    }
+  ]);
+
+  return <RouterProvider router={router} />
 }
-
-export default App;

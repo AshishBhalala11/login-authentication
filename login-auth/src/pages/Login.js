@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { checkUserAuth } from '../middleware/middleware';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     let navigate = useNavigate();
+    const permission = useSelector(state => state.userData.permission)
+
+    useEffect(() => {
+        if (permission) { navigate('/account/user') }
+    }, [permission]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const login = (e) => {
         e.preventDefault();
@@ -24,44 +28,37 @@ const Login = () => {
             setError("");
             setEmail("");
             setPassword("");
+            checkUserAuth()
             navigate("/account/user");
         }).catch((error) => {
             localStorage.removeItem("login");
             setError(error.response.data.message);
         })
     }
+
     return (
         <div style={{ marginTop: "100px" }}>
-            <Box component="form" sx={{ '& .MuiTextField-root': { m: 1, width: '35ch' }, }}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                noValidate
-                autoComplete="off"
-                onSubmit={login}>
-
-                <h2>Login Page</h2>
+            <form className='flex-column align-items' onSubmit={login}>
+                <h2>Enter your details below</h2>
                 {error && <p style={{ color: "red" }}>{error}</p>}
-                <TextField
+                <input
                     id="username"
-                    label="Username"
-                    variant='filled'
+                    placeholder="Username"
                     type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <br />
-                <TextField
+                <input
                     id="password"
-                    label="Password"
-                    variant='filled'
+                    placeholder="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <br />
-                <Button style={{ width: "100px" }} variant="contained" color="primary" type="submit">Login</Button>
-            </Box>
+                <button className="w-100" type="submit">Login</button>
+            </form>
         </div>
     )
 }
