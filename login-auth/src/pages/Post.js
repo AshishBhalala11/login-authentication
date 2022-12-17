@@ -1,22 +1,25 @@
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Loader from '../component/loader';
 import Logout from "../button/Logout";
+import Loader from '../component/loader';
+import AuthorisedError from './AuthorisedError';
+import { checkUserAuth } from '../middleware/middleware';
+
 
 const pathName = window.location.pathname;
 const postNumber = pathName.substring(pathName.lastIndexOf('/') + 1);
 
 function Post() {
-    const isLoading = useSelector(state => state.userData.isLoading)
-    const permission = useSelector(state => state.userData.permission)
+    const isLoading = useSelector(state => state.userData.isLoading);
+    const permission = useSelector(state => state.userData.permission);
+
+    useEffect(() => {
+        checkUserAuth();
+    }, []);
 
     return (
         <div className="mt-100 flex-column align-items">
-            {!permission && isLoading && (
-                <>
-                    <h2>You are not Authorised to view this page</h2>
-                    <h3>Redirecting to home page shortly</h3>
-                </>
-            )}
+            {!permission && <AuthorisedError isLoading={isLoading} permission={permission} />}
             {isLoading && (<Loader />)}
             {permission && !isLoading && (
                 <>

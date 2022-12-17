@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Navigate } from "react-router-dom";
 import { Store } from "../store/configureStore";
 
 export const checkUserAuth = () => {
@@ -17,8 +16,8 @@ export const checkUserAuth = () => {
       Store.dispatch({ type: 'SET_LOADING', payload: false })
     }).catch((error) => {
       Store.dispatch({ type: 'SET_PERMISSION', payload: false })
+      Store.dispatch({ type: 'SET_LOADING', payload: false })
       setTimeout(() => {
-        Store.dispatch({ type: 'SET_LOADING', payload: false })
         window.location.href = '/account/login'
       }, 3000);
     })

@@ -1,19 +1,18 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './pages/Login';
+import Home from './pages/Home'
 import User from './pages/User';
 import Post from './pages/Post';
 import ErrorPage from './pages/ErrorPage'
-import { checkUserAuth } from './middleware/middleware';
 
 export default function App() {
-  useEffect(() => {
-    if (window.location.pathname.split("/").includes('post') || window.location.pathname.split("/").includes('user')) {
-      checkUserAuth();
-    }
-  }, [])
 
   const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Home />
+    },
     {
       path: '/account/login',
       element: <Login />,

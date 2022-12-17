@@ -1,25 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Logout from '../button/Logout';
+import AuthorisedError from './AuthorisedError';
 import Loader from '../component/loader';
+import { checkUserAuth } from '../middleware/middleware';
+
 
 const User = () => {
-  const isLoading = useSelector(state => state.userData.isLoading)
-  const permission = useSelector(state => state.userData.permission)
+  const isLoading = useSelector(state => state.userData.isLoading);
+  const permission = useSelector(state => state.userData.permission);
+
+  useEffect(() => {
+    checkUserAuth();
+  }, []);
 
   return (
     <div>
       <div className="mt-100 flex-column align-items">
-        {!permission && isLoading ? (
-          <>
-            <h2>You are not Authorised to view this page</h2>
-            <h3>Redirecting to home page shortly</h3>
-          </>
-        ) : <>
+        {!permission && <AuthorisedError isLoading={isLoading} permission={permission} />}
+        {isLoading && (<Loader />)}
+        {permission && !isLoading && <>
           <h2>Welcome Back User!</h2>
           <h3>You have logged in successfully</h3>
         </>}
-        {isLoading && (<Loader />)}
         {permission && !isLoading && <Logout />}
       </div>
     </div>

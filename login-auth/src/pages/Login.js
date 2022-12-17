@@ -12,7 +12,9 @@ const Login = () => {
     const permission = useSelector(state => state.userData.permission)
 
     useEffect(() => {
-        if (permission) { navigate('/account/user') }
+        if (permission) {
+            navigate('/account/user')
+        }
     }, [permission]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const login = (e) => {
@@ -29,7 +31,6 @@ const Login = () => {
             setEmail("");
             setPassword("");
             checkUserAuth()
-            navigate("/account/user");
         }).catch((error) => {
             localStorage.removeItem("login");
             setError(error.response.data.message);
