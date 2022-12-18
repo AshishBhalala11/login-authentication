@@ -20,7 +20,7 @@ function Post() {
     return (
         <div className="mt-100 flex-column align-items">
             {!permission && <AuthorisedError isLoading={isLoading} permission={permission} />}
-            {isLoading && (<Loader />)}
+            {isLoading && <Loader />}
             {permission && !isLoading && (
                 <>
                     <h2>You are on post number {postNumber}</h2>

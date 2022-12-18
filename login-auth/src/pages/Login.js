@@ -2,20 +2,26 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { checkUserAuth } from '../middleware/middleware';
+import { checkUserAuth, setLocalStorageData, removeLocalStorageData } from '../middleware/middleware';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     let navigate = useNavigate();
-    const permission = useSelector(state => state.userData.permission)
+    const permission = useSelector(state => state.userData.permission);
 
     useEffect(() => {
         if (permission) {
-            navigate('/account/user')
+            navigate('/account/user');
         }
-    }, [permission]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [permission]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const clearData = () => {
+        setError("");
+        setEmail("");
+        setPassword("");
+    }
 
     const login = (e) => {
         e.preventDefault();
@@ -23,16 +29,11 @@ const Login = () => {
             email,
             password
         }).then((response) => {
-            localStorage.setItem("login", JSON.stringify({
-                userLogin: true,
-                token: response.data.access_token
-            }))
-            setError("");
-            setEmail("");
-            setPassword("");
-            checkUserAuth()
+            setLocalStorageData(response.data);
+            clearData();
+            checkUserAuth();
         }).catch((error) => {
-            localStorage.removeItem("login");
+            removeLocalStorageData();
             setError(error.response.data.message);
         })
     }

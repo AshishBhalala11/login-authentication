@@ -11,18 +11,21 @@ const User = () => {
   const permission = useSelector(state => state.userData.permission);
 
   useEffect(() => {
-    checkUserAuth();
-  }, []);
+    if (!permission) {
+      checkUserAuth();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
       <div className="mt-100 flex-column align-items">
         {!permission && <AuthorisedError isLoading={isLoading} permission={permission} />}
-        {isLoading && (<Loader />)}
-        {permission && !isLoading && <>
-          <h2>Welcome Back User!</h2>
-          <h3>You have logged in successfully</h3>
-        </>}
+        {isLoading && <Loader />}
+        {permission && !isLoading &&
+          <>
+            <h2>Welcome Back User!</h2>
+            <h3>You have logged in successfully</h3>
+          </>}
         {permission && !isLoading && <Logout />}
       </div>
     </div>
